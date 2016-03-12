@@ -14,6 +14,8 @@ var parameter = {
 };
 
 var difficulty = {
+  pace: 2000,
+  speed: 1000,
   speedMultiplier: 2,
   enemyMultiplier: 2
 };
@@ -72,6 +74,7 @@ var createEnemy = function(array) {
 var randomlyMoveEnemies = function() {
   board.selectAll('.enemy')
     .transition()
+      .duration(difficulty.speed)
     .attr('cx', function(d) { return Math.random() * parameter.width; })
     .attr('cy', function(d) { return Math.random() * parameter.height; })
     .style('fill', Math.floor(Math.random() * 16777215).toString(16));
@@ -92,11 +95,35 @@ var checkCollision = function (enemiesArr) {
 
     var distance = Math.sqrt(Math.pow((enemyX - checkX), 2) + Math.pow((enemyY - checkY), 2));
     if (minDistance > distance) {
-      console.log("collide!!");
       return true;
     }
   }
   return false;
+};
+//Scoreboard
+var currentScore = 0;
+var highScore = 0;
+var collisions = 0;
+
+var scoreboardUpdate = function (boolean) {
+  if (boolean === false) {
+    currentScore = currentScore + (1 * parameter.nEnemies);
+    if (highScore <= currentScore) {
+      highScore = currentScore;
+    }
+  } else {
+    currentScore = 0;
+    collisions++;
+  }
+  d3.select('.scoreboard')
+  .select('.highscore')
+    .text("High Score: " + highScore.toString());
+  d3.select('.scoreboard')
+  .select('.current')
+    .text("Current Score: " + currentScore.toString());
+  d3.select('.scoreboard')
+  .select('.collisions')
+    .text("Collisions: " + collisions);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +141,7 @@ var dragmove = function(d) {
 //define drag move behavior
 var drag = d3.behavior.drag()
   .on('drag', dragmove);
-  //.on('drag', checkCollision());
+  //.on('drag', checkCollision);
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //game initialization
@@ -135,7 +162,11 @@ for (var i = 0; i < parameter.nEnemies; i++) {
 createPlayer(player);
 createEnemy(enemies);
 
-setInterval(randomlyMoveEnemies, 1000);
+setInterval(randomlyMoveEnemies, difficulty.pace);
+setInterval(function() {
+  var result = checkCollision();
+  scoreboardUpdate(result);
+}, 100);
 
 
 
