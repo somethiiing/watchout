@@ -1,4 +1,7 @@
 // start slingin' some d3 here.
+//functions needed
+//-> limit the mouse movements within the board
+//-> collission function
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //Game Start Parameters
@@ -35,7 +38,10 @@ var Enemy = function() {
 };
 
 /////////////////////////////////////////////////////////////////////////////////////
-//Rendering 
+//Rendering & Engines
+
+//Rendering
+////////////
 
 //Creating player
 var createPlayer = function(player) {
@@ -70,6 +76,22 @@ var randomlyMoveEnemies = function() {
     .style('fill', Math.floor(Math.random() * 16777215).toString(16));
 };
 
+//Engines
+///////////
+var checkCollision = function (enemiesArr) {
+  // var minDistance = parameter.EnemySize + player.r;  //maybe hardcode this for testing
+  var checkX = parseInt(d3.selectAll('.player').attr('cx')); //position of mouse x-coordinate
+  var checkY = parseInt(d3.selectAll('.player').attr('cy')); //position of mouse y-coordinate
+
+  enemiesArr = d3.selectAll('.enemy')[0];
+  for (var i = 0; i < enemiesArr.length; i++) {
+    // console.log(enemiesArr[i].cx.animVal.value + " , " + enemiesArr[i].cy.animVal.value);
+    if (checkX === parseInt(enemiesArr[i].cx.animVal.value) && checkY === parseInt(enemiesArr[i].cy.animVal.value)) {
+      console.log('collide');
+    }
+  }
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////
 //var helper function
 
@@ -85,6 +107,7 @@ var dragmove = function(d) {
 //define drag move behavior
 var drag = d3.behavior.drag()
   .on('drag', dragmove);
+  //.on('drag', checkCollision());
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //game initialization
