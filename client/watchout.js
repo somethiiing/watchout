@@ -85,14 +85,18 @@ var checkCollision = function (enemiesArr) {
   var checkY = parseInt(d3.selectAll('.player').attr('cy')); //position of mouse y-coordinate
 
   enemiesArr = d3.selectAll('.enemy')[0];
-  var result = false;
   for (var i = 0; i < enemiesArr.length; i++) {
     // console.log(enemiesArr[i].cx.animVal.value + " , " + enemiesArr[i].cy.animVal.value);
     var enemyX = parseInt(enemiesArr[i].cx.animVal.value);
     var enemyY = parseInt(enemiesArr[i].cy.animVal.value);
-   //// insert pythagros check for collision 
-   
+
+    var distance = Math.sqrt(Math.pow((enemyX - checkX), 2) + Math.pow((enemyY - checkY), 2));
+    if (minDistance > distance) {
+      console.log("collide!!");
+      return true;
+    }
   }
+  return false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -131,10 +135,8 @@ for (var i = 0; i < parameter.nEnemies; i++) {
 createPlayer(player);
 createEnemy(enemies);
 
-
 setInterval(randomlyMoveEnemies, 1000);
 
-// randomlyMoveEnemies();
 
 
 
