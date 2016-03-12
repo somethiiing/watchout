@@ -1,10 +1,11 @@
 // start slingin' some d3 here.
 
+////////////////////////////////////////////////////////////////////////////////////////
 //Game Start Parameters
 var parameter = {
   height: 800,
   width: 800,
-  nEnemies: 5,
+  nEnemies: 30,
   EnemySize: 10
 };
 
@@ -19,19 +20,12 @@ var board = d3.select('.board').append('svg:svg')
   .attr('height', parameter.height)
   .style('background-color', '#C0C0C0');
 
-//create coordinates
-var x = function() {
-  d3.scale.linear().domain([0, 100]).range(0, parameter.width);
-};
-var y = function() {
-  d3.scale.linear().domain([0, 100]).range(0, parameter.height);
-};
-
+///////////////////////////////////////////////////////////////////////////////////////
 //Classes
 var Player = function() {
   this.x = 0;
   this.y = 0;
-  this.r = 5;
+  this.r = 10;
 };
 
 var Enemy = function() {
@@ -40,34 +34,61 @@ var Enemy = function() {
   this.y = Math.random() * parameter.height;
 };
 
-//Creating Objects on the Screen
+/////////////////////////////////////////////////////////////////////////////////////
+//Rendering 
+
+//Creating player
 var createPlayer = function(player) {
   d3.selectAll('svg')
   .append('svg:circle') //circle object
-    .attr('cx', parameter.height / 2 ) //start position
+    .attr('class', 'player')
+    .attr('cx', parameter.width / 2 ) //start position
     .attr('cy', parameter.height / 2) //end position
     .attr('r', player.r)
-    .style('fill', 'purple');
+    .style('fill', 'purple')
+    .call(drag);
 };
 
+//Creating Enemy
 var createEnemy = function(array) {
   board.selectAll('svg')
     .data(array) //uses array of data
     .enter()
     .append('svg:circle')
-      .attr('cx', function(d) {
-        return d.x;
-      })
-      .attr('cy', function(d) {
-        return d.y;
-      })
-      .attr('r', function(d) {
-        return d.r;
-      })
+      .attr('class', 'enemy')
+      .attr('cx', function(d) { return d.x; })
+      .attr('cy', function(d) { return d.y; })
+      .attr('r', function(d) { return d.r; })
       .style('fill', 'blue');
 };
 
+var randomlyMoveEnemies = function() {
+  board.selectAll('.enemy')
+    .transition()
+    .attr('cx', function(d) { return Math.random() * parameter.width; })
+    .attr('cy', function(d) { return Math.random() * parameter.height; })
+    .style('fill', Math.floor(Math.random() * 16777215).toString(16));
+};
+
+///////////////////////////////////////////////////////////////////////////////////////
+//var helper function
+
+///Mouse Move Functions
+//Define Drag Move
+var dragmove = function(d) {
+  var x = d3.event.x;
+  var y = d3.event.y;
+  d3.select(this).attr('cx', x);
+  d3.select(this).attr('cy', y);
+};
+
+//define drag move behavior
+var drag = d3.behavior.drag()
+  .on('drag', dragmove);
+
+///////////////////////////////////////////////////////////////////////////////////////
 //game initialization
+
 
 //initialize Player
 var player = new Player;
@@ -85,28 +106,9 @@ createPlayer(player);
 createEnemy(enemies);
 
 
+setInterval(randomlyMoveEnemies, 1000);
 
-
-//mouse movement
-board.on('mousemove', movePlayer);
-var movePlayer = function(d, i) {
-  var mouse = {
-    x: d3.mouse(this)[0],
-    y: d3.mouse(this)[1]
-  };
-  // var delta = {
-  //   x: mouse.x - player.x,
-  //   y: mouse.y - player.y
-  // };
-  player.x = mouse.x;
-  player.y = mouse.y;
-  return player.attr('transform', ('translate(' + player.x + ',' + player.y + ')'));
-};
-
-
-
-
-
+// randomlyMoveEnemies();
 
 
 
