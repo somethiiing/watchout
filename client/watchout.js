@@ -9,7 +9,8 @@ var parameter = {
   height: 800,
   width: 800,
   nEnemies: 30,
-  EnemySize: 10
+  EnemySize: 10,
+  playerSize: 10
 };
 
 var difficulty = {
@@ -28,7 +29,7 @@ var board = d3.select('.board').append('svg:svg')
 var Player = function() {
   this.x = 0;
   this.y = 0;
-  this.r = 10;
+  this.r = parameter.playerSize;
 };
 
 var Enemy = function() {
@@ -79,16 +80,18 @@ var randomlyMoveEnemies = function() {
 //Engines
 ///////////
 var checkCollision = function (enemiesArr) {
-  // var minDistance = parameter.EnemySize + player.r;  //maybe hardcode this for testing
+  var minDistance = parameter.EnemySize + parameter.playerSize;  //maybe hardcode this for testing
   var checkX = parseInt(d3.selectAll('.player').attr('cx')); //position of mouse x-coordinate
   var checkY = parseInt(d3.selectAll('.player').attr('cy')); //position of mouse y-coordinate
 
   enemiesArr = d3.selectAll('.enemy')[0];
+  var result = false;
   for (var i = 0; i < enemiesArr.length; i++) {
     // console.log(enemiesArr[i].cx.animVal.value + " , " + enemiesArr[i].cy.animVal.value);
-    if (checkX === parseInt(enemiesArr[i].cx.animVal.value) && checkY === parseInt(enemiesArr[i].cy.animVal.value)) {
-      console.log('collide');
-    }
+    var enemyX = parseInt(enemiesArr[i].cx.animVal.value);
+    var enemyY = parseInt(enemiesArr[i].cy.animVal.value);
+   //// insert pythagros check for collision 
+   
   }
 };
 
